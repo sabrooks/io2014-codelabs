@@ -16,4 +16,14 @@ class Codelab extends Observable {
   @observable String level;
 
   Codelab([this.title = "", this.description = ""]);
+  
+  bool validateCodelabTitle() {
+    if (title.length < MIN_TITLE_LENGTH ||
+        title.length > MAX_TITLE_LENGTH) {
+      throw new StateError("Title must be between $MIN_TITLE_LENGTH  and "
+          "$MAX_TITLE_LENGTH characters.");
+      return false;
+    }
+    return true;
+  }
 }

@@ -33,15 +33,15 @@ class CodelabFormElement extends PolymerElement {
    * Validates the codelab title. If title is not valid, sets error message and
    * returns false. Otherwise, removes error message and returns true.
    */
-  bool validateTitle() {
-    if (codelab.title.length < minTitleLength ||
-        codelab.title.length > maxTitleLength) {
-      titleErrorMessage = "Title must be between $minTitleLength and "
-          "$maxTitleLength characters.";
+  bool validateTitle(){
+    try{
+      codelab.validateCodelabTitle();
+      titleErrorMessage = '';
+      return true;
+    }catch(e){
+      titleErrorMessage = e.toString();
       return false;
     }
-    titleErrorMessage = '';
-    return true;
   }
 
   /*
