@@ -26,4 +26,17 @@ class Codelab extends Observable {
     }
     return true;
   }
+  
+  Codelab.fromJson(Map<String, Object> codelabMap){
+    title = codelabMap['title'];
+    description = codelabMap['description'];
+    level = codelabMap['level'];
+  }
+  Map<String, Object> toJson(){
+      var codelabMap = new Map<String, Object>();
+      codelabMap['title'] = title;
+      codelabMap['description'] = description;
+      codelabMap['level']=level;
+      return codelabMap;
+    }
 }

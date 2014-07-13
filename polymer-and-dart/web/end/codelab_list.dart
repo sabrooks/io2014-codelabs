@@ -1,4 +1,6 @@
 import 'package:polymer/polymer.dart';
+import 'dart:html';
+import 'dart:convert';
 import 'model.dart' show Codelab;
 import 'dart:html' show Event, Node;
 
@@ -46,7 +48,9 @@ class CodelabList extends PolymerElement {
   CodelabList.created() : super.created() {
     filteredCodelabs = codelabs;
     newCodelab.level = defaultLevel;
+    load();
   }
+  
 
   /*
    * Replaces the existing new Codelab, causing the new codelab form to reset.
@@ -73,6 +77,10 @@ class CodelabList extends PolymerElement {
     var codelab = detail['codelab'];
     codelabs.remove(codelab);
   }
+  
+  saveCodelab(Event e, var detail, Node sender){
+    window.localStorage['polymer_codelabs'] = JSON.encode(codelabs);
+  }
 
   /*
    * Calculates the codelabs to display when using a filter.
@@ -85,7 +93,7 @@ class CodelabList extends PolymerElement {
     filteredCodelabs = codelabs.where((codelab) {
       return codelab.level == filterValue;
     }).toList();
-  }
+  } 
 
   /*
    * Refreshes the filtered codelabs list every time the codelabs list changes.
@@ -93,4 +101,15 @@ class CodelabList extends PolymerElement {
   codelabsChanged() {
     filter();
   }
+  
+  load(){
+    String json = window.localStorage['polymer_codelabs'];
+    var codelabList = new List<Map<String, Object>>();
+    codelabList = JSON.decode(json);
+    for(Map<String, Object> codelabMap in codelabList){
+      Codelab codelab = new Codelab.fromJson(codelabMap);
+      codelabs.add(codelab);
+    }
+  }  
+  
 }
