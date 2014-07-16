@@ -1,8 +1,10 @@
 import 'package:polymer/polymer.dart';
 import 'dart:html';
 import 'dart:convert';
-import 'model.dart' show Codelab;
-import 'dart:html' show Event, Node;
+import 'dart:async';
+import 'dart:indexed_db';
+import 'model.dart';
+import 'model_view.dart';
 
 /*
  * Class to represent a collection of Codelab objects.
@@ -18,7 +20,7 @@ class CodelabList extends PolymerElement {
   /*
    * Collection of codelabs. The source of truth for all codelabs in this app.
    */
-  @observable List<Codelab> codelabs = toObservable([]);
+  @published CodelabApp codelablist = new CodelabApp();
 
   /*
    * Sets the new codelab form to default to the intermediate level.
@@ -45,11 +47,7 @@ class CodelabList extends PolymerElement {
    * Named constructor. Sets initial value of filtered codelabs and sets
    * the new codelab's level to the default.
    */
-  CodelabList.created() : super.created() {
-    filteredCodelabs = codelabs;
-    newCodelab.level = defaultLevel;
-    load();
-  }
+  CodelabList.created() : super.created() {}
   
 
   /*
@@ -66,7 +64,7 @@ class CodelabList extends PolymerElement {
    */
   addCodelab(Event e, var detail, Node sender) {
     e.preventDefault();
-    codelabs.add(detail['codelab']);
+    codelablist.addCodelab(detail['codelab']);
     resetForm();
   }
 
@@ -74,23 +72,18 @@ class CodelabList extends PolymerElement {
    * Removes a codelab from the codelabs list. This triggers codelabsChanged().
    */
   deleteCodelab(Event e, var detail, Node sender) {
-    var codelab = detail['codelab'];
-    codelabs.remove(codelab);
+    codelablist.removeCodelab(detail['codelab']);
   }
   
-  saveCodelab(Event e, var detail, Node sender){
-    window.localStorage['polymer_codelabs'] = JSON.encode(codelabs);
-  }
-
   /*
    * Calculates the codelabs to display when using a filter.
    */
   filter() {
     if (filterValue == ALL) {
-      filteredCodelabs = codelabs;
+      filteredCodelabs = codelablist.codelabs;
       return;
     }
-    filteredCodelabs = codelabs.where((codelab) {
+    filteredCodelabs = codelablist.codelabs.where((codelab) {
       return codelab.level == filterValue;
     }).toList();
   } 
@@ -102,14 +95,15 @@ class CodelabList extends PolymerElement {
     filter();
   }
   
-  load(){
-    String json = window.localStorage['polymer_codelabs'];
-    var codelabList = new List<Map<String, Object>>();
-    codelabList = JSON.decode(json);
-    for(Map<String, Object> codelabMap in codelabList){
-      Codelab codelab = new Codelab.fromJson(codelabMap);
-      codelabs.add(codelab);
-    }
-  }  
+  clearCodelabs(){
+    codelablist.clear();
+  }
+  
+  void attached(){
+    super.attached();
+    codelablist.start();
+    filteredCodelabs = codelablist.codelabs;
+    newCodelab.level = defaultLevel;
+  }
   
 }
