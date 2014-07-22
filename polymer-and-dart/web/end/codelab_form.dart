@@ -1,6 +1,7 @@
 import 'package:polymer/polymer.dart';
 import 'model.dart' show Codelab;
 import 'dart:html' show CustomEvent, Event, Node;
+import 'package:template_binding/template_binding.dart';
 
 /*
  * The class for creating or updating a codelab. Performs validation based on

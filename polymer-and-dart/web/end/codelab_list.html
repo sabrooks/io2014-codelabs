@@ -1,5 +1,7 @@
+<link rel="import" href="../packages/polymer/polymer.html">
 <link rel="import" href="codelab_form.html">
 <link rel="import" href="codelab_element.html">
+<link rel="import" href="packages/core_elements/core_list_dart.html">
 
 <polymer-element name="codelab-list">
   <template>
@@ -52,6 +54,13 @@
     </div>
     <div on-deletecodelab="{{deleteCodelab}}"
          on-levelchanged="{{filter}}">
+     <!-- <core-list-dart data = "{{filteredCodelabs}}">
+        <template>
+        <p>in core-list</p>
+        <p>{{index}}</p>
+        <codelab-element></codelab-element>
+        </template>
+      </core-list-dart>   -->   
       <template repeat="{{codelab in filteredCodelabs}}">
         <codelab-element codelab="{{codelab}}"></codelab-element>
       </template>

@@ -18,6 +18,7 @@ class Codelab extends Observable {
   @observable String title;
   @observable String description;
   @observable String level;
+  @observable String selected;
   
   var dbKey;
   
